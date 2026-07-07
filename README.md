@@ -1,33 +1,40 @@
+# PHP & MySQL Fullstack Lab with Docker
+
+A beginner-friendly guide to building a local PHP and MySQL development environment using Docker and Docker Compose on Linux Mint.
+
 ---
 
-Lab Fullstack PHP + MySQL dengan Docker di Linux Mint
+# Overview
 
-📁 Langkah 1: Buat Folder Projek
+This project demonstrates how to create a simple PHP development environment with MySQL using Docker. It is designed for learning full-stack web development, local server management, and containerized application deployment.
 
-Buka terminal, lalu jalankan:
+---
+
+# 📁 Step 1: Create the Project Directory
+
+Open your terminal and run:
 
 ```bash
-mkdir ~/Desktop/Lab_PHP_Faris
-cd ~/Desktop/Lab_PHP_Faris
+mkdir ~/Desktop/php-fullstack-lab
+cd ~/Desktop/php-fullstack-lab
 code .
 ```
 
-VS Code akan terbuka di folder kosong tersebut.
+Visual Studio Code will open the newly created project folder.
 
 ---
 
-🐳 Langkah 2: Buat File docker-compose.yml
+# 🐳 Step 2: Create the `docker-compose.yml` File
 
-Di dalam VS Code, buat file bernama docker-compose.yml, lalu isi dengan kode berikut:
+Create a file named `docker-compose.yml` and add the following configuration:
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
-  # Web server PHP + Apache
   web:
     image: php:8.2-apache
-    container_name: php_faris
+    container_name: php_web_server
     ports:
       - "8080:80"
     volumes:
@@ -37,14 +44,13 @@ services:
     depends_on:
       - db
 
-  # Database MySQL
   db:
     image: mysql:5.7
-    container_name: mysql_database_faris
+    container_name: mysql_database
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: password_faris_123
-      MYSQL_DATABASE: komi_db
+      MYSQL_ROOT_PASSWORD: your_password
+      MYSQL_DATABASE: sample_database
     ports:
       - "3306:3306"
     volumes:
@@ -60,92 +66,185 @@ networks:
     driver: bridge
 ```
 
+This configuration creates:
+
+- A PHP 8.2 + Apache web server
+- A MySQL 5.7 database server
+- A shared Docker network
+- Persistent database storage using Docker volumes
+
 ---
 
-📄 Langkah 3: Buat Folder src dan File index.php
+# 📄 Step 3: Create the `src` Directory and `index.php`
 
-Buat folder src di samping file docker-compose.yml.
+Create a folder named `src`.
 
-Di dalam folder src, buat file index.php dengan isi:
+Inside it, create an `index.php` file:
 
 ```php
 <?php
-echo "<h1>Halo Fullstack Docker Faris</h1>";
-echo "<p>PHP server berhasil berjalan di Linux Mint</p>";
+
+echo "<h1>Hello, Docker Fullstack Lab!</h1>";
+echo "<p>Your PHP server is running successfully.</p>";
+
 ?>
 ```
 
 ---
 
-🚀 Langkah 4: Jalankan Container Docker
+# 🚀 Step 4: Start the Docker Containers
 
-Jalankan perintah berikut di terminal (dalam folder projek):
+Inside the project directory, execute:
 
 ```bash
-sudo docker compose up -d
+docker compose up -d
 ```
 
-Jika Docker belum terinstal, ikuti langkah instalasi di bawah.
+Docker will download the required images (if necessary) and start all services in the background.
 
 ---
 
-🛠️ Langkah 5: Instal Docker (Jika Belum Ada)
+# 🛠️ Step 5: Install Docker (If Needed)
+
+Update your package list:
 
 ```bash
 sudo apt update
+```
+
+Install Docker:
+
+```bash
 sudo apt install docker.io -y
+```
+
+Install Docker Compose:
+
+```bash
 sudo apt install docker-compose-v2 -y
 ```
 
-Agar tidak perlu sudo setiap kali:
+Allow your user account to run Docker commands without `sudo`:
 
 ```bash
 sudo usermod -aG docker $USER
 ```
 
-Setelah perintah ini, restart VS Code atau logout/login agar perubahan berlaku.
+After running this command, log out and log back in (or restart your system) for the changes to take effect.
 
 ---
 
-🌐 Langkah 6: Akses Website
+# 🌐 Step 6: Open the Application
 
-Buka browser dan akses:
+Launch your browser and visit:
 
-```
+```text
 http://localhost:8080
 ```
 
-Jika muncul tulisan dari index.php, maka server sudah berjalan dengan baik.
+If everything is configured correctly, you should see the output from `index.php`.
 
 ---
 
-⚠️ Catatan Jika Terjadi Error
+# ⚠️ Troubleshooting
 
-Jika muncul error TLS handshake timeout atau koneksi gagal:
+## TLS Handshake Timeout
 
-1. Ganti jaringan (misal pakai hotspot HP)
-2. Hapus container lama:
-   ```bash
-   sudo docker compose down
-   ```
-3. Jalankan ulang:
-   ```bash
-   sudo docker compose up -d
-   ```
+If Docker fails to download images due to a network timeout:
 
-Docker akan melanjutkan download dari titik terhenti, tidak mengulang dari awal.
+1. Switch to a more stable internet connection.
+2. Stop and remove the running containers:
 
----
+```bash
+docker compose down
+```
 
-✅ Kesimpulan
+3. Restart the containers:
 
-· Folder src adalah tempat semua file .php, .html, .css, .js
-· Setiap perubahan file akan langsung terlihat di browser tanpa restart container
-· Cocok untuk belajar PHP, MySQL, dan keamanan web (SQL injection)
+```bash
+docker compose up -d
+```
+
+Docker will continue downloading from where it stopped instead of starting over.
 
 ---
 
-Dibuat oleh: Faris
-Tujuan: Portofolio belajar Fullstack dengan Docker di Linux Mint
+## Port Already in Use
 
+If port **8080** or **3306** is already occupied:
+
+- Stop the conflicting service.
+- Or change the port mapping inside `docker-compose.yml`.
+
+Example:
+
+```yaml
+ports:
+  - "8081:80"
+```
+
+---
+
+## Verify Running Containers
+
+To check whether your containers are running:
+
+```bash
+docker ps
+```
+
+To view logs:
+
+```bash
+docker compose logs
+```
+
+---
+
+# Project Structure
+
+```text
+php-fullstack-lab/
+├── docker-compose.yml
+└── src/
+    └── index.php
+```
+
+---
+
+# Learning Objectives
+
+By completing this lab, you will learn how to:
+
+- Create a Docker Compose project.
+- Run PHP inside a Docker container.
+- Connect PHP with a MySQL database.
+- Manage Docker containers.
+- Build a local full-stack development environment.
+- Prepare for more advanced backend development.
+
+---
+
+# Technologies Used
+
+- PHP 8.2
+- MySQL 5.7
+- Docker
+- Docker Compose
+- Apache HTTP Server
+- Linux Mint
+
+---
+
+# Conclusion
+
+This project provides a simple and practical introduction to containerized full-stack development using Docker. It establishes a reusable development environment for PHP and MySQL applications while introducing the core concepts of Docker Compose, container networking, and persistent storage.
+
+---
+
+# Author
+
+**Faris**
+
+This repository is part of my learning portfolio for Full-Stack Web Development using Docker and Linux.
 ---
